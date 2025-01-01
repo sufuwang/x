@@ -1,6 +1,20 @@
 import { IsString, IsUrl } from 'class-validator';
 
-export class ProfileDto implements Profile {
+export class FindProfileQuery {
+  @IsString({
+    always: true,
+  })
+  openid: string;
+}
+
+export class LoginDto {
+  @IsString({
+    always: true,
+  })
+  code: string;
+}
+
+export default class ProfileDto implements Profile {
   @IsString({
     always: true,
   })
@@ -9,7 +23,6 @@ export class ProfileDto implements Profile {
   @IsString({
     always: true,
   })
-  @IsUrl()
   avatar: string;
 
   @IsString({
