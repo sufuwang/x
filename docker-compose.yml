@@ -6,7 +6,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app  # 将当前目录中的 app 文件夹挂载到容器中的 /usr/src/app
-    command: bash -c "npm i -g pnpm && pnpm i && npm run deploy"  # 安装依赖、构建和启动 NestJS 服务
+    command: bash -c "npm config set registry https://registry.npmmirror.com/ && npm i -g pnpm && pnpm i && npm run deploy"  # 安装依赖、构建和启动 NestJS 服务
     environment:
       - MYSQL_HOST=mysql  # MySQL 主机名，使用 Docker 网络中的服务名称
       - MYSQL_PORT=3306  # MySQL 默认端口
