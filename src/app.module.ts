@@ -13,23 +13,14 @@ import { ConfigModule } from '@nestjs/config';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'sso',
+      host: process.env.MYSQL_HOST ?? 'localhost',
+      port: +process.env.MYSQL_PORT,
+      username: process.env.MYSQL_USER ?? 'root',
+      password: process.env.MYSQL_PASSWORD ?? '123456',
+      database: process.env.MYSQL_DB ?? 'sso',
       entities: [__dirname + '/**/*.entity{.ts,.js}'], // 自动加载实体
       synchronize: true, // 开发环境下自动同步表结构
       charset: 'utf8mb4_unicode_ci',
-      // type: 'mysql',
-      // host: process.env.DATABASE_HOST,
-      // port: +process.env.DATABASE_PORT,
-      // username: process.env.DATABASE_USER,
-      // password: process.env.DATABASE_PASSWORD,
-      // database: 'sso',
-      // entities: [__dirname + '/**/*.entity{.ts,.js}'], // 自动加载实体
-      // synchronize: true, // 开发环境下自动同步表结构
-      // charset: 'utf8mb4_unicode_ci',
     }),
     SecretsModule,
   ],

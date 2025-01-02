@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "deploy": "rm -rf dist && nest build && pm2 start dist/main.js --name sso",
+    "deploy": "rm -rf dist && nest build && pm2-runtime start dist/main.js --name sso",
     "stop": "pm2 stop sso && pm2 delete sso && rm -rf dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
