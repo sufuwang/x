@@ -30,7 +30,7 @@ services:
     ports:
       - "3306:3306"  # 映射 MySQL 端口
     volumes:
-      - ./.cache:/var/lib/mysql  # 使用持久化卷存储数据
+      - ../.cache:/var/lib/mysql  # 使用持久化卷存储数据
     networks:
       - app-network  # 使用自定义网络
 
