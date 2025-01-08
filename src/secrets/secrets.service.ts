@@ -6,6 +6,7 @@ import ProfileEntity from './entity/profile.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import dayjs from 'dayjs';
+import TaskDto, { DeleteTaskQuery, PartialTaskDto } from './dto/task.dto';
 
 const __WX_APPID__ = 'wx20deb0404aa253b8';
 const __WX_SECRET__ = '8309d1ad3f70408d785bc4a03186def6';
@@ -43,11 +44,23 @@ export class SecretsService {
     return this.taskRepository.findBy({ openid });
   }
 
-  editTask(body: Omit<Task, 'registerDate' | 'lastUpdateDate'>): Promise<Task> {
+  createTask(body: TaskDto): Promise<Task> {
+    const registerDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
     return this.taskRepository.save<Task>({
-      registerDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
       ...body,
-      lastUpdateDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      registerDate,
+      lastUpdateDate: registerDate,
     });
+  }
+
+  patchTask(body: PartialTaskDto) {
+    return this.taskRepository.update(
+      { id: body.id, openid: body.openid },
+      { ...body, lastUpdateDate: dayjs().format('YYYY-MM-DD HH:mm:ss') },
+    );
+  }
+
+  deleteTask(query: DeleteTaskQuery) {
+    return this.taskRepository.delete(query);
   }
 }

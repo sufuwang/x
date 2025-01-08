@@ -1,7 +1,19 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { SecretsService } from './secrets.service';
 import ProfileDto, { FindProfileQuery, LoginDto } from './dto/profile.dto';
-import TaskDto, { FindTaskQuery } from './dto/task.dto';
+import TaskDto, {
+  FindTaskQuery,
+  DeleteTaskQuery,
+  PartialTaskDto,
+} from './dto/task.dto';
 
 @Controller('secrets')
 export class SecretsController {
@@ -28,7 +40,17 @@ export class SecretsController {
   }
 
   @Post('task')
-  editTask(@Body() body: TaskDto): Promise<Task> {
-    return this.secretsService.editTask(body);
+  createTask(@Body() body: TaskDto): Promise<Task> {
+    return this.secretsService.createTask(body);
+  }
+
+  @Patch('task')
+  patchTask(@Body() body: PartialTaskDto) {
+    return this.secretsService.patchTask(body);
+  }
+
+  @Delete('task')
+  deleteTask(@Query() query: DeleteTaskQuery) {
+    return this.secretsService.deleteTask(query);
   }
 }

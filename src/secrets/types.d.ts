@@ -12,6 +12,7 @@ interface Profile {
 }
 
 interface Task {
+  id?: number;
   openid: string;
   catalog?: string;
   title: string;
