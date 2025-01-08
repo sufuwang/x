@@ -14,6 +14,12 @@ export default class TaskEntity implements Task {
   openid: string;
 
   @Column({
+    comment: '可见模式',
+    default: 'public',
+  })
+  visible: string;
+
+  @Column({
     comment: '一级目录',
   })
   catalog: string;
@@ -48,22 +54,26 @@ export default class TaskEntity implements Task {
   @Column({
     comment: '任务完成标志',
     update: false,
+    default: false,
   })
   done: boolean;
 
   @Column({
     comment: '任务完成时间',
     update: false,
+    default: '',
   })
   doneDate: string;
 
   @Column({
     comment: '任务完成的文本描述',
+    default: '',
   })
   doneDesc: string;
 
   @Column({
     comment: '任务完成的附件地址',
+    default: '',
   })
   doneAttachMent: string;
 }

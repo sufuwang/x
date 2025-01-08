@@ -2,7 +2,7 @@ services:
   # Node 服务，用于构建和运行 Nest 应用
   node:
     image: node:18.20.5 # 使用 Node 官方镜像
-    container_name: nest-node
+    container_name: sso-nest
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app  # 将当前目录中的 app 文件夹挂载到容器中的 /usr/src/app
@@ -23,7 +23,7 @@ services:
   # MySQL 服务
   mysql:
     image: mysql # 使用 MySQL 5.7 官方镜像
-    container_name: nest-mysql
+    container_name: sso-mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456  # MySQL root 密码
       MYSQL_DATABASE: sso  # 默认数据库

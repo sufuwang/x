@@ -15,15 +15,19 @@ export class AppInterceptor implements NestInterceptor {
         if (data instanceof Error) {
           return {
             success: false,
-            message: data.message || 'Internal Server Error',
+            message: data.message || 'Internal Server Error By Interceptor',
             data: null,
           };
         }
-        return {
+        const response: Record<string, any> = {
           success: true,
           data: data,
           message: 'Success',
         };
+        if (Array.isArray(data)) {
+          response.total = data.length;
+        }
+        return response;
       }),
     );
   }
