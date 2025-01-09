@@ -9,9 +9,8 @@ import {
 export class FindTaskQuery {
   @IsString()
   openid: string;
-}
 
-export class DeleteTaskQuery extends FindTaskQuery {
+  @IsOptional()
   @IsString()
   id: number;
 }

@@ -36,7 +36,6 @@ export default class TaskEntity implements Task {
 
   @Column({
     comment: '任务截止时间',
-    update: false,
   })
   deadline: string;
 

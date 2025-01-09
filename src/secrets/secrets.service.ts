@@ -6,7 +6,7 @@ import ProfileEntity from './entity/profile.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import dayjs from 'dayjs';
-import TaskDto, { DeleteTaskQuery, PartialTaskDto } from './dto/task.dto';
+import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
 
 const __WX_APPID__ = 'wx20deb0404aa253b8';
 const __WX_SECRET__ = '8309d1ad3f70408d785bc4a03186def6';
@@ -40,8 +40,11 @@ export class SecretsService {
     return this.profileRepository.save(body);
   }
 
-  getTask(openid: Task['openid']): Promise<Task[]> {
-    return this.taskRepository.findBy({ openid });
+  getTask(query: FindTaskQuery): Promise<Task[]> {
+    if (!query.id) {
+      delete query.id;
+    }
+    return this.taskRepository.findBy(query);
   }
 
   createTask(body: TaskDto): Promise<Task> {
@@ -53,14 +56,14 @@ export class SecretsService {
     });
   }
 
-  patchTask(body: PartialTaskDto) {
+  updateTask(body: PartialTaskDto) {
     return this.taskRepository.update(
       { id: body.id, openid: body.openid },
       { ...body, lastUpdateDate: dayjs().format('YYYY-MM-DD HH:mm:ss') },
     );
   }
 
-  deleteTask(query: DeleteTaskQuery) {
+  deleteTask(query: FindTaskQuery) {
     return this.taskRepository.delete(query);
   }
 }

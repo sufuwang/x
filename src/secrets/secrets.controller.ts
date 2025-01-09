@@ -4,16 +4,12 @@ import {
   Get,
   Post,
   Query,
-  Patch,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { SecretsService } from './secrets.service';
 import ProfileDto, { FindProfileQuery, LoginDto } from './dto/profile.dto';
-import TaskDto, {
-  FindTaskQuery,
-  DeleteTaskQuery,
-  PartialTaskDto,
-} from './dto/task.dto';
+import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
 
 @Controller('secrets')
 export class SecretsController {
@@ -36,21 +32,21 @@ export class SecretsController {
 
   @Get('task')
   getTask(@Query() query: FindTaskQuery): Promise<Task[]> {
-    return this.secretsService.getTask(query.openid);
+    return this.secretsService.getTask(query);
   }
 
   @Post('task')
-  createTask(@Body() body: TaskDto): Promise<Task> {
+  createTask(@Body() body: TaskDto) {
     return this.secretsService.createTask(body);
   }
 
-  @Patch('task')
-  patchTask(@Body() body: PartialTaskDto) {
-    return this.secretsService.patchTask(body);
+  @Put('task')
+  updateTask(@Body() body: PartialTaskDto) {
+    return this.secretsService.updateTask(body);
   }
 
   @Delete('task')
-  deleteTask(@Query() query: DeleteTaskQuery) {
+  deleteTask(@Query() query: FindTaskQuery) {
     return this.secretsService.deleteTask(query);
   }
 }
