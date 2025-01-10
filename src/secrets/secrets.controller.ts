@@ -35,6 +35,13 @@ export class SecretsController {
     return this.secretsService.getTask(query);
   }
 
+  @Get('task/catalog')
+  getTaskCatalogs(
+    @Query() query: Omit<FindTaskQuery, 'id'>,
+  ): Promise<string[]> {
+    return this.secretsService.getTaskCatalogs(query);
+  }
+
   @Post('task')
   createTask(@Body() body: TaskDto) {
     return this.secretsService.createTask(body);

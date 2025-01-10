@@ -40,6 +40,16 @@ export class SecretsService {
     return this.profileRepository.save(body);
   }
 
+  async getTaskCatalogs(query: Omit<FindTaskQuery, 'id'>) {
+    const rows = await this.taskRepository
+      .createQueryBuilder('secrets_task')
+      .select('secrets_task.catalog', 'catalog')
+      .distinct(true)
+      .where('secrets_task.openid = :openid', query)
+      .getRawMany();
+    return rows.map((row) => row.catalog);
+  }
+
   getTask(query: FindTaskQuery): Promise<Task[]> {
     if (!query.id) {
       delete query.id;
