@@ -14,6 +14,8 @@ interface Profile {
 interface Task {
   id?: number;
   openid: string;
+  visible: 'public' | 'onlyMe';
+  priority: 'important' | 'common';
   catalog?: string;
   title: string;
   taskDesc?: string;

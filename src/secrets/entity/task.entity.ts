@@ -16,8 +16,16 @@ export default class TaskEntity implements Task {
   @Column({
     comment: '可见模式',
     default: 'public',
+    type: 'varchar',
   })
-  visible: string;
+  visible: Task['visible'];
+
+  @Column({
+    comment: '优先级',
+    default: 'common',
+    type: 'varchar',
+  })
+  priority: Task['priority'];
 
   @Column({
     comment: '一级目录',

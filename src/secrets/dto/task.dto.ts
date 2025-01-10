@@ -27,7 +27,11 @@ export default class TaskDto
 
   @IsOptional()
   @IsString()
-  visible: 'public' | 'onlyMe';
+  visible: Task['visible'];
+
+  @IsOptional()
+  @IsString()
+  priority: Task['priority'];
 
   @IsString()
   catalog: string;
@@ -71,7 +75,11 @@ export class PartialTaskDto
 
   @IsOptional()
   @IsString()
-  visible: 'public' | 'onlyMe';
+  visible: Task['visible'];
+
+  @IsOptional()
+  @IsString()
+  priority: Task['priority'];
 
   @IsOptional()
   @IsString()
