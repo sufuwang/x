@@ -6,9 +6,10 @@ import {
   Query,
   Delete,
   Put,
+  Headers,
 } from '@nestjs/common';
 import { SecretsService } from './secrets.service';
-import ProfileDto, { FindProfileQuery, LoginDto } from './dto/profile.dto';
+import ProfileDto, { LoginDto } from './dto/profile.dto';
 import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
 
 @Controller('secrets')
@@ -21,13 +22,16 @@ export class SecretsController {
   }
 
   @Get('profile')
-  getProfile(@Query() query: FindProfileQuery): Promise<Profile> {
-    return this.secretsService.getProfile(query.openid);
+  getProfile(@Headers('openid') openid: string): Promise<Profile> {
+    return this.secretsService.getProfile(openid);
   }
 
   @Post('profile')
-  editProfile(@Body() body: ProfileDto): Promise<Profile> {
-    return this.secretsService.editProfile(body);
+  editProfile(
+    @Headers('openid') openid: string,
+    @Body() body: ProfileDto,
+  ): Promise<Profile> {
+    return this.secretsService.editProfile(openid, body);
   }
 
   @Get('task')
@@ -36,20 +40,18 @@ export class SecretsController {
   }
 
   @Get('task/catalog')
-  getTaskCatalogs(
-    @Query() query: Omit<FindTaskQuery, 'id'>,
-  ): Promise<string[]> {
-    return this.secretsService.getTaskCatalogs(query);
+  getTaskCatalogs(@Headers('openid') openid: string): Promise<string[]> {
+    return this.secretsService.getTaskCatalogs(openid);
   }
 
   @Post('task')
-  createTask(@Body() body: TaskDto) {
-    return this.secretsService.createTask(body);
+  createTask(@Headers('openid') openid: string, @Body() body: TaskDto) {
+    return this.secretsService.createTask(openid, body);
   }
 
   @Put('task')
-  updateTask(@Body() body: PartialTaskDto) {
-    return this.secretsService.updateTask(body);
+  updateTask(@Headers('openid') openid: string, @Body() body: PartialTaskDto) {
+    return this.secretsService.updateTask(openid, body);
   }
 
   @Delete('task')

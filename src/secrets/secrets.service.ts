@@ -31,21 +31,21 @@ export class SecretsService {
     return this.profileRepository.findOneBy({ openid });
   }
 
-  async editProfile(body: Profile): Promise<Profile> {
-    const profile = await this.getProfile(body.openid);
+  async editProfile(openid: string, body: Profile): Promise<Profile> {
+    const profile = await this.getProfile(openid);
     if (profile) {
-      await this.profileRepository.update({ openid: body.openid }, body);
-      return this.getProfile(body.openid);
+      await this.profileRepository.update({ openid }, body);
+      return this.getProfile(openid);
     }
     return this.profileRepository.save(body);
   }
 
-  async getTaskCatalogs(query: Omit<FindTaskQuery, 'id'>) {
+  async getTaskCatalogs(openid: string) {
     const rows = await this.taskRepository
       .createQueryBuilder('secrets_task')
       .select('secrets_task.catalog', 'catalog')
       .distinct(true)
-      .where('secrets_task.openid = :openid', query)
+      .where('secrets_task.openid = :openid', { openid })
       .getRawMany();
     return rows.map((row) => row.catalog);
   }
@@ -57,18 +57,19 @@ export class SecretsService {
     return this.taskRepository.findBy(query);
   }
 
-  createTask(body: TaskDto): Promise<Task> {
+  createTask(openid: string, body: TaskDto): Promise<Task> {
     const registerDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
     return this.taskRepository.save<Task>({
       ...body,
+      openid,
       registerDate,
       lastUpdateDate: registerDate,
     });
   }
 
-  updateTask(body: PartialTaskDto) {
+  updateTask(openid: string, body: PartialTaskDto) {
     return this.taskRepository.update(
-      { id: body.id, openid: body.openid },
+      { openid, id: body.id },
       { ...body, lastUpdateDate: dayjs().format('YYYY-MM-DD HH:mm:ss') },
     );
   }

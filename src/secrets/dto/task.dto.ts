@@ -7,23 +7,17 @@ import {
 } from 'class-validator';
 
 export class FindTaskQuery {
-  @IsString()
-  openid: string;
-
   @IsOptional()
   @IsString()
   id: number;
 }
 
 export default class TaskDto
-  implements Omit<Task, 'registerDate' | 'lastUpdateDate'>
+  implements Omit<Task, 'openid' | 'registerDate' | 'lastUpdateDate'>
 {
   @IsOptional()
   @IsNumber()
   id: number;
-
-  @IsString()
-  openid: string;
 
   @IsOptional()
   @IsString()
