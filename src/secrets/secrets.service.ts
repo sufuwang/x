@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import dayjs from 'dayjs';
 import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
+import ProfileDto from './dto/profile.dto';
 
 const __WX_APPID__ = 'wx20deb0404aa253b8';
 const __WX_SECRET__ = '8309d1ad3f70408d785bc4a03186def6';
@@ -31,13 +32,13 @@ export class SecretsService {
     return this.profileRepository.findOneBy({ openid });
   }
 
-  async editProfile(openid: string, body: Profile): Promise<Profile> {
+  async editProfile(openid: string, body: ProfileDto): Promise<Profile> {
     const profile = await this.getProfile(openid);
     if (profile) {
       await this.profileRepository.update({ openid }, body);
       return this.getProfile(openid);
     }
-    return this.profileRepository.save(body);
+    return this.profileRepository.save({ ...body, openid });
   }
 
   async getTaskCatalogs(openid: string) {

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { SecretsModule } from './secrets/secrets.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
       charset: 'utf8mb4_unicode_ci',
     }),
     SecretsModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -25,5 +25,4 @@ interface Task {
   done: boolean;
   doneDate: string;
   doneDesc?: string;
-  doneAttachMent?: string;
 }

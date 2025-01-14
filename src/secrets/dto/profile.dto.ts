@@ -14,12 +14,7 @@ export class LoginDto {
   code: string;
 }
 
-export default class ProfileDto implements Profile {
-  @IsString({
-    always: true,
-  })
-  openid: string;
-
+export default class ProfileDto implements Omit<Profile, 'openid'> {
   @IsString({
     always: true,
   })

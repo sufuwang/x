@@ -1,5 +1,6 @@
 .cache
 .pnpm-store
+.files
 ssl
 
 # compiled output
