@@ -23,9 +23,8 @@ export class SecretsFilesEntity {
   @Column({
     comment: '文件使用缘由 ID',
     update: false,
-    default: '',
   })
-  parentId: string;
+  parentId: number;
 
   @Column({
     comment: '上传时间',

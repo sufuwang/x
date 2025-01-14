@@ -34,7 +34,7 @@ export class FileService {
     );
   }
 
-  async getFiles(openid: string, query: FileDto) {
+  async getFiles(openid: string, query: Partial<FileDto>) {
     const data = await this.taskFilesRepository.findBy({ openid, ...query });
     return data.map((row) => ({
       ...row,
@@ -42,7 +42,7 @@ export class FileService {
     }));
   }
 
-  async deleteFiles(openid: string, query: FileDto) {
+  async deleteFiles(openid: string, query: Partial<FileDto>) {
     const rows = await this.taskFilesRepository.findBy({ openid, ...query });
     const data = await Promise.allSettled([
       ...rows

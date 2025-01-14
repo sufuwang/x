@@ -10,5 +10,5 @@ export class FileDto {
 
   @IsString()
   @ValidateIf((o) => o.parentType)
-  parentId: string;
+  parentId: number;
 }
