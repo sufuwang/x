@@ -60,7 +60,6 @@ export default class TaskEntity implements Task {
 
   @Column({
     comment: '任务完成标志',
-    update: false,
     default: false,
   })
   done: boolean;
@@ -79,8 +78,8 @@ export default class TaskEntity implements Task {
   doneDesc: string;
 
   @Column({
-    comment: '任务完成的附件地址',
+    comment: '任务完成的附件 ID',
     default: '',
   })
-  doneAttachMent: string;
+  doneFileIds: string;
 }

@@ -6,8 +6,9 @@ import ProfileEntity from './entity/profile.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import dayjs from 'dayjs';
-import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
+import { FindTaskQuery } from './dto/task.dto';
 import ProfileDto from './dto/profile.dto';
+import { FileService } from 'src/file/file.service';
 
 const __WX_APPID__ = 'wx20deb0404aa253b8';
 const __WX_SECRET__ = '8309d1ad3f70408d785bc4a03186def6';
@@ -20,6 +21,7 @@ export class SecretsService {
     @InjectRepository(ProfileEntity)
     private profileRepository: Repository<Profile>,
     private readonly httpService: HttpService,
+    private readonly fileService: FileService,
   ) {}
 
   async login(code: string): Promise<WX.LoginResponse> {
@@ -58,9 +60,9 @@ export class SecretsService {
     return this.taskRepository.findBy(query);
   }
 
-  createTask(openid: string, body: TaskDto): Promise<Task> {
+  createTask(openid: string, body): Promise<Task> {
     const registerDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    return this.taskRepository.save<Task>({
+    return this.taskRepository.save({
       ...body,
       openid,
       registerDate,
@@ -68,10 +70,32 @@ export class SecretsService {
     });
   }
 
-  updateTask(openid: string, body: PartialTaskDto) {
+  async updateTask(openid: string, body) {
+    const lastUpdateDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    if (body.done) {
+      const rows = await this.fileService.getFiles(openid, {
+        parentId: body.id,
+        parentType: 'task',
+      });
+      await Promise.all(
+        rows
+          .map((row) => row.id)
+          .filter((id) => !body.doneFileIds.includes(id))
+          .map((id) => this.fileService.deleteFiles(openid, { id: +id })),
+      );
+      return this.taskRepository.update(
+        { openid, id: body.id },
+        {
+          ...body,
+          lastUpdateDate,
+          doneDate: lastUpdateDate,
+          doneFileIds: body.doneFileIds.join(','),
+        },
+      );
+    }
     return this.taskRepository.update(
       { openid, id: body.id },
-      { ...body, lastUpdateDate: dayjs().format('YYYY-MM-DD HH:mm:ss') },
+      { ...body, lastUpdateDate, doneFileIds: body.doneFileIds.join(',') },
     );
   }
 

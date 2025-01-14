@@ -25,4 +25,5 @@ interface Task {
   done: boolean;
   doneDate: string;
   doneDesc?: string;
+  doneFileIds?: string;
 }

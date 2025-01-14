@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   ValidateIf,
+  IsArray,
 } from 'class-validator';
 
 export class FindTaskQuery {
@@ -12,10 +13,8 @@ export class FindTaskQuery {
   id: number;
 }
 
-export default class TaskDto
-  implements Omit<Task, 'openid' | 'registerDate' | 'lastUpdateDate'>
-{
-  @IsOptional()
+export default class TaskDto {
+  @ValidateIf((o) => o.done)
   @IsNumber()
   id: number;
 
@@ -45,21 +44,17 @@ export default class TaskDto
 
   @ValidateIf((o) => o.done)
   @IsString()
-  doneDate: string;
-
-  @ValidateIf((o) => o.done)
-  @IsString()
   doneDesc: string;
 
   @ValidateIf((o) => o.done)
-  @IsString()
-  doneAttachMent: string;
+  @IsArray()
+  doneFileIds: Array<number>;
 }
 
 export class PartialTaskDto
-  implements Omit<Task, 'registerDate' | 'lastUpdateDate'>
+  implements Omit<Task, 'registerDate' | 'lastUpdateDate' | 'doneDate'>
 {
-  @IsOptional()
+  @ValidateIf((o) => o.done)
   @IsNumber()
   id: number;
 
@@ -98,15 +93,10 @@ export class PartialTaskDto
   @IsOptional()
   @ValidateIf((o) => o.done)
   @IsString()
-  doneDate: string;
-
-  @IsOptional()
-  @ValidateIf((o) => o.done)
-  @IsString()
   doneDesc: string;
 
   @IsOptional()
   @ValidateIf((o) => o.done)
   @IsString()
-  doneAttachMent: string;
+  doneFileIds: string;
 }

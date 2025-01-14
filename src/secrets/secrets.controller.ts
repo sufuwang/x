@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { SecretsService } from './secrets.service';
 import ProfileDto, { LoginDto } from './dto/profile.dto';
-import TaskDto, { FindTaskQuery, PartialTaskDto } from './dto/task.dto';
+import TaskDto, { FindTaskQuery } from './dto/task.dto';
 
 @Controller('secrets')
 export class SecretsController {
@@ -50,7 +50,10 @@ export class SecretsController {
   }
 
   @Put('task')
-  updateTask(@Headers('openid') openid: string, @Body() body: PartialTaskDto) {
+  updateTask(
+    @Headers('openid') openid: string,
+    @Body() body: Partial<TaskDto>,
+  ) {
     return this.secretsService.updateTask(openid, body);
   }
 
