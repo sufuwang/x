@@ -19,6 +19,7 @@ services:
       - app-network  # 使用自定义网络
     ports:
       - "3000:3000"  # 映射 Node 服务端口
+    restart: on-failure
 
   # MySQL 服务
   mysql:
@@ -33,6 +34,7 @@ services:
       - ../.cache:/var/lib/mysql  # 使用持久化卷存储数据
     networks:
       - app-network  # 使用自定义网络
+    restart: on-failure
 
 # 定义卷，用于持久化 MySQL 数据
 volumes:
