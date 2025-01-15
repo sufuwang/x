@@ -5,6 +5,8 @@ import { SecretsModule } from './secrets/secrets.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './file/file.module';
+import { APP_GUARD } from '@nestjs/core';
+import { GlobalGuard } from './app.guard';
 
 @Module({
   imports: [
@@ -27,6 +29,12 @@ import { FileModule } from './file/file.module';
     FileModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: GlobalGuard,
+    },
+  ],
 })
 export class AppModule {}
