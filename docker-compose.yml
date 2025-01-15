@@ -5,7 +5,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app
-    command: bash -c "npm config set registry https://registry.npmmirror.com/ && npm i -g pnpm && pnpm i && npm run deploy"  # 安装依赖、构建和启动 NestJS 服务
+    command: bash -c "npm config set registry https://registry.npmmirror.com/ && npm i -g pnpm && npm run deploy"  # 安装依赖、构建和启动 NestJS 服务
     environment:
       - NODE_ENV=production 
       - MYSQL_HOST=mysql

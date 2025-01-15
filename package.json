@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production nest build",
-    "deploy": "rm -rf dist && npm run build && pm2-runtime start dist/main.js --name sso",
+    "build": "nest build",
+    "deploy": "rm -rf node_modules && rm -rf dist && pnpm i --prod=false && npm run build && pm2-runtime start dist/main.js --name sso",
     "stop": "pm2 stop sso && pm2 delete sso && rm -rf dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
