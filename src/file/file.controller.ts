@@ -17,6 +17,7 @@ import { diskStorage } from 'multer';
 import { FileService } from './file.service';
 import { FileDto } from './dto/file.dto';
 import { Response } from 'express';
+import { FileFolderPath } from 'src/config';
 
 @Controller('file')
 export class FileController {
@@ -28,9 +29,8 @@ export class FileController {
       storage: diskStorage({
         destination: (req, file, callback) => {
           const uploadPath = path.join(
-            __dirname,
-            '../..',
-            `.files/${req.headers.openid}`,
+            FileFolderPath,
+            `/${req.headers.openid}`,
           );
           if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });

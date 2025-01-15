@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecretsFilesEntity } from './entity/file.entity';
-import { FileUrlPrefix } from './config';
+import { FileUrlPrefix } from 'src/config';
 import dayjs from 'dayjs';
 import { FileDto } from './dto/file.dto';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
+import { FileFolderPath } from 'src/config';
 
 @Injectable()
 export class FileService {
@@ -48,7 +49,7 @@ export class FileService {
       ...rows
         .map((row) => [
           this.taskFilesRepository.delete(row),
-          unlink(join(__dirname, `../../.files/${row.openid}/${row.fileName}`)),
+          unlink(join(FileFolderPath, `/${row.openid}/${row.fileName}`)),
         ])
         .flat(Infinity),
     ]);
