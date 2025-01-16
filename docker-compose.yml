@@ -7,6 +7,7 @@ services:
       - .:/usr/src/app
     command: bash -c "npm config set registry https://registry.npmmirror.com/ && npm i -g pnpm && npm run deploy"  # 安装依赖、构建和启动 NestJS 服务
     environment:
+      - TZ=Asia/Shanghai
       - NODE_ENV=production 
       - MYSQL_HOST=mysql
       - MYSQL_HOST=mysql
