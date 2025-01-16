@@ -35,8 +35,11 @@ export class SecretsController {
   }
 
   @Get('task')
-  getTask(@Query() query: FindTaskQuery): Promise<Task[]> {
-    return this.secretsService.getTask(query);
+  getTask(
+    @Headers('openid') openid: string,
+    @Query() query: FindTaskQuery,
+  ): Promise<Task[]> {
+    return this.secretsService.getTask(openid, query);
   }
 
   @Get('task/catalog')
@@ -58,7 +61,7 @@ export class SecretsController {
   }
 
   @Delete('task')
-  deleteTask(@Query() query: FindTaskQuery) {
-    return this.secretsService.deleteTask(query);
+  deleteTask(@Headers('openid') openid: string, @Query() query: FindTaskQuery) {
+    return this.secretsService.deleteTask(openid, query);
   }
 }

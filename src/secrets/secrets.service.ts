@@ -53,11 +53,11 @@ export class SecretsService {
     return rows.map((row) => row.catalog);
   }
 
-  getTask(query: FindTaskQuery): Promise<Task[]> {
+  getTask(openid: string, query: FindTaskQuery): Promise<Task[]> {
     if (!query.id) {
       delete query.id;
     }
-    return this.taskRepository.findBy(query);
+    return this.taskRepository.findBy({ ...query, openid });
   }
 
   createTask(openid: string, body): Promise<Task> {
@@ -99,7 +99,7 @@ export class SecretsService {
     );
   }
 
-  deleteTask(query: FindTaskQuery) {
-    return this.taskRepository.delete(query);
+  deleteTask(openid: string, query: FindTaskQuery) {
+    return this.taskRepository.delete({ ...query, openid });
   }
 }
