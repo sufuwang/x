@@ -12,7 +12,7 @@ export class GlobalGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { openid = '' } = request.headers;
 
-    if (openid.length === 0) {
+    if (!WhitePage.includes(request.url) && openid.length === 0) {
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
@@ -25,3 +25,5 @@ export class GlobalGuard implements CanActivate {
     return true;
   }
 }
+
+const WhitePage = ['/secrets/login'];
