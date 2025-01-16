@@ -1,20 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecretsFilesEntity } from './entity/file.entity';
 import { FileUrlPrefix } from 'src/config';
 import dayjs from 'dayjs';
 import { FileDto } from './dto/file.dto';
-import { unlink } from 'fs/promises';
+import { rm } from 'fs/promises';
 import { join } from 'path';
 import { FileFolderPath } from 'src/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { copyFolder, deleteLastFileOfFolder, makeFolder } from './utils';
 
 @Injectable()
-export class FileService {
+export class FileService implements OnApplicationShutdown {
   constructor(
     @InjectRepository(SecretsFilesEntity)
     private taskFilesRepository: Repository<SecretsFilesEntity>,
   ) {}
+
+  onApplicationShutdown() {
+    this.backup({ force: true });
+  }
+
+  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  private async backup({ force } = { force: false }) {
+    const CachePath = join(__filename, '../../../BACKUP/cache');
+    const FilesPath = join(__filename, '../../../BACKUP/files');
+    const postfix = force ? '.failure' : '';
+    const curDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    console.log(`${force ? `【Force】` : ''}Schedule backup task...`);
+    Promise.all([
+      makeFolder(CachePath),
+      makeFolder(FilesPath),
+      !force ? deleteLastFileOfFolder(CachePath) : null,
+      !force ? deleteLastFileOfFolder(FilesPath) : null,
+      copyFolder(
+        join(__dirname, '../../.cache'),
+        join(__dirname, `../../BACKUP/cache/${curDate}${postfix}.zip`),
+      ),
+      copyFolder(
+        join(__dirname, '../../.files'),
+        join(__dirname, `../../BACKUP/files/${curDate}${postfix}.zip`),
+      ),
+    ]);
+  }
 
   async uploadFiles(openid: string, body: FileDto, files: Array<any>) {
     return Promise.allSettled(
@@ -49,7 +79,10 @@ export class FileService {
       ...rows
         .map((row) => [
           this.taskFilesRepository.delete(row),
-          unlink(join(FileFolderPath, `/${row.openid}/${row.fileName}`)),
+          rm(join(FileFolderPath, `/${row.openid}/${row.fileName}`), {
+            recursive: true,
+            force: true,
+          }),
         ])
         .flat(Infinity),
     ]);

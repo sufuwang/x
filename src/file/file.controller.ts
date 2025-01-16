@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { join } from 'path';
 import {
   Body,
   Controller,
@@ -18,6 +17,7 @@ import { FileService } from './file.service';
 import { FileDto } from './dto/file.dto';
 import { Response } from 'express';
 import { FileFolderPath } from 'src/config';
+import { makeFolder } from './utils';
 
 @Controller('file')
 export class FileController {
@@ -28,13 +28,8 @@ export class FileController {
     FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: (req, file, callback) => {
-          const uploadPath = path.join(
-            FileFolderPath,
-            `/${req.headers.openid}`,
-          );
-          if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-          }
+          const uploadPath = join(FileFolderPath, `/${req.headers.openid}`);
+          makeFolder(uploadPath);
           callback(null, uploadPath);
         },
         filename: (req, file, callback) => {
