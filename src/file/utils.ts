@@ -35,22 +35,25 @@ export const copyFolder = async (source, destination) => {
 
 export const deleteLastFileOfFolder = async (
   directoryPath: string,
-  query = { maxLength: 20 },
+  query = { maxLength: 30 },
 ) => {
   try {
     await chmod(directoryPath, 0o777);
-    const fileNames = (await readdir(directoryPath)).sort((a, b) => {
-      const [prev] = a.split('.');
-      const [cur] = b.split('.');
-      return dayjs(prev).unix() - dayjs(cur).unix();
-    });
+    const fileNames = (await readdir(directoryPath))
+      .sort((a, b) => {
+        const [prev] = a.split('.');
+        const [cur] = b.split('.');
+        return dayjs(prev).unix() - dayjs(cur).unix();
+      })
+      .filter((row) => !row.includes(' 00:'));
     if (fileNames.length > query.maxLength) {
       await Promise.all(
-        fileNames
-          .slice(0, fileNames.length - query.maxLength)
-          .map((path) =>
-            rm(`${directoryPath}/${path}`, { recursive: true, force: true }),
-          ),
+        fileNames.slice(0, fileNames.length - query.maxLength).map((path) =>
+          rm(`${directoryPath}/${path}`, {
+            recursive: true,
+            force: true,
+          }),
+        ),
       );
     }
   } catch (err) {
