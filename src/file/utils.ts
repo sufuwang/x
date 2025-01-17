@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 import { readdir, chmod, rm } from 'fs/promises';
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
 import archiver from 'archiver';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger();
 
 export const makeFolder = (path) => {
   if (!existsSync(path)) {
@@ -14,7 +17,10 @@ export const copyFolder = async (source, destination) => {
     const output = createWriteStream(destination);
     const archive = archiver('zip', { zlib: { level: 9 } });
     output.on('close', function () {
-      console.log(`${destination} 占用 ${archive.pointer()} bytes`);
+      logger.debug(
+        `${destination} 占用 ${archive.pointer()} bytes`,
+        'FileUtils',
+      );
     });
     archive.on('error', function (err) {
       throw err;
@@ -23,7 +29,7 @@ export const copyFolder = async (source, destination) => {
     archive.directory(source, false);
     archive.finalize();
   } catch (err) {
-    console.error(err);
+    logger.error(err, 'FileUtils');
   }
 };
 
@@ -48,6 +54,6 @@ export const deleteLastFileOfFolder = async (
       );
     }
   } catch (err) {
-    console.error(err);
+    logger.error(err, 'FileUtils');
   }
 };

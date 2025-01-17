@@ -1,11 +1,14 @@
 import * as fs from 'fs';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AppFilter } from './app.filter';
 import { AppInterceptor } from './app.interceptor';
 
 async function bootstrap() {
+  const logger = new Logger();
+  logger.debug(`process.env.NODE_ENV = ${process.env.NODE_ENV}`, 'Main');
+
   const app = await NestFactory.create(AppModule, {
     httpsOptions: {
       key: fs.readFileSync('./ssl/sufu.site.key'),

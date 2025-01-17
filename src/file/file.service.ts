@@ -1,4 +1,4 @@
-import { Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecretsFilesEntity } from './entity/file.entity';
@@ -13,6 +13,8 @@ import { copyFolder, deleteLastFileOfFolder, makeFolder } from './utils';
 
 @Injectable()
 export class FileService implements OnApplicationShutdown {
+  private logger = new Logger();
+
   constructor(
     @InjectRepository(SecretsFilesEntity)
     private taskFilesRepository: Repository<SecretsFilesEntity>,
@@ -25,11 +27,17 @@ export class FileService implements OnApplicationShutdown {
   @Cron(CronExpression.EVERY_30_MINUTES)
   // @Cron(CronExpression.EVERY_10_SECONDS)
   private async backup({ force } = { force: false }) {
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
     const CachePath = join(__filename, '../../../BACKUP/cache');
     const FilesPath = join(__filename, '../../../BACKUP/files');
     const postfix = force ? '.failure' : '';
     const curDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    console.log(`${force ? `【Force】` : ''}Schedule backup task...`);
+    this.logger.debug(
+      `${force ? `【Force】` : ''}Schedule backup task...`,
+      FileService.name,
+    );
     Promise.all([
       makeFolder(CachePath),
       makeFolder(FilesPath),
