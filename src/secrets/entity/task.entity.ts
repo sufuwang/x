@@ -66,7 +66,6 @@ export default class TaskEntity implements Task {
 
   @Column({
     comment: '任务完成时间',
-    update: false,
     default: '',
   })
   doneDate: string;
