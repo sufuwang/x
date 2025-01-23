@@ -15,4 +15,7 @@ export default class ProfileEntity implements Profile {
 
   @Column()
   nickname: string;
+
+  @Column()
+  homeUrl: string;
 }

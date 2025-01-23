@@ -24,4 +24,9 @@ export default class ProfileDto implements Omit<Profile, 'openid'> {
     always: true,
   })
   nickname: string;
+
+  @IsString({
+    always: true,
+  })
+  homeUrl: string;
 }
