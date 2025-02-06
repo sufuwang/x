@@ -1,4 +1,6 @@
-import { Injectable, OnApplicationShutdown, Logger } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, Inject } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecretsFilesEntity } from './entity/file.entity';
@@ -13,11 +15,12 @@ import { copyFolder, deleteLastFileOfFolder, makeFolder } from './utils';
 
 @Injectable()
 export class FileService implements OnApplicationShutdown {
-  private logger = new Logger();
+  @Inject(WINSTON_MODULE_NEST_PROVIDER)
+  private logger: Logger;
 
   constructor(
     @InjectRepository(SecretsFilesEntity)
-    private taskFilesRepository: Repository<SecretsFilesEntity>,
+    private taskFilesRepository: Repository<SecretsFilesEntity>, // @Inject(WINSTON_MODULE_NEST_PROVIDER) // private readonly logger: Logger,
   ) {}
 
   onApplicationShutdown() {
@@ -25,7 +28,7 @@ export class FileService implements OnApplicationShutdown {
   }
 
   @Cron(CronExpression.EVERY_30_MINUTES)
-  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // @Cron(CronExpression.EVERY_5_SECONDS)
   private async backup({ force } = { force: false }) {
     if (process.env.NODE_ENV !== 'production') {
       return;
