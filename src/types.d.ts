@@ -1,3 +1,0 @@
-interface Header {
-  openid: string;
-}
