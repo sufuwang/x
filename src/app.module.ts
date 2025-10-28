@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from './redis/redis.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RedisModule } from './redis/redis.module';
       // envFilePath: [`.env.${process.env.NODE_ENV}.local`, '.env.local', '.env'], [citation:7]
     }),
     RedisModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
