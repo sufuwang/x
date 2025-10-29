@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { UserService } from './user.service';
 import CreateUserDto from './dto/create-user.dto';
 import LoginUserDto from './dto/login-user.dto';
-import { CookieOptions } from 'src/lib/cookies';
+import { CookieOptions } from '../lib/cookies';
 
 @Controller('user')
 export class UserController {

@@ -4,7 +4,7 @@ import LoginUserDto from './dto/login-user.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { randomUUID as uuid } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { CookieOptions } from 'src/lib/cookies';
+import { CookieOptions } from '../lib/cookies';
 
 @Injectable()
 export class UserService {
