@@ -8,3 +8,5 @@ export const CookieOptions: TCookieOptions = {
   domain: process.env.NODE_ENV === 'prod' ? 'admin.sufu.site' : 'localhost', // 可选：允许子域名共享
   path: '/', // 可选：作用路径
 };
+
+console.info('CookieOptions: ', CookieOptions);
