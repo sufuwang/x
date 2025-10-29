@@ -4,18 +4,9 @@ import {
   MinLength,
   MaxLength,
   Matches,
-  IsOptional,
 } from 'class-validator';
 
-export default class CreateUserDto {
-  @IsString()
-  @MinLength(3)
-  @MaxLength(20)
-  @Matches(/^[a-zA-Z0-9_.]+$/, {
-    message: '用户名只能包含字母、数字、小数点和下划线',
-  })
-  username: string;
-
+export default class LoginUserDto {
   @IsEmail({}, { message: '请输入有效的邮箱地址' })
   email: string;
 
@@ -26,9 +17,4 @@ export default class CreateUserDto {
     message: '密码必须包含至少一个大写字母、一个小写字母和一个数字',
   })
   password: string;
-
-  @IsOptional()
-  @IsString()
-  @Matches(/^1[3-9]\d{9}$/, { message: '请输入有效的手机号码' })
-  phone?: string;
 }
