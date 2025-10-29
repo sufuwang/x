@@ -10,7 +10,7 @@ import { UserModule } from './user/user.module';
   imports: [
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'my-secret-key',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '10m' },
     }),
     ConfigModule.forRoot({
