@@ -15,7 +15,7 @@ import { UserModule } from './user/user.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '10m' },
+      signOptions: { expiresIn: '1d' },
     }),
     RedisModule,
     UserModule,

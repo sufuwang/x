@@ -74,7 +74,6 @@ export class UserService {
   }
 
   auth(accessToken: string | undefined) {
-    console.info('cookies: ', accessToken);
     if (!accessToken) {
       return { redirect_url: '/sign-in' };
     }
