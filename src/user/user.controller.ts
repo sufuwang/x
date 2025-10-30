@@ -34,8 +34,19 @@ export class UserController {
     };
   }
 
+  @Post('/logout')
+  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    res.cookie('access_token', '');
+    return 'success';
+  }
+
   @Get('/auth')
   auth(@Req() req: Request) {
     return this.userService.auth(req.cookies.access_token);
+  }
+
+  @Get('/info')
+  getInfo(@Req() req: Request) {
+    return this.userService.getInfo(req.cookies.access_token);
   }
 }

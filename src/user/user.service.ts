@@ -13,8 +13,9 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  getAccessToken(userId: string) {
+  getAccessToken(userId: string, email: string) {
     return this.jwtService.sign({
+      email,
       userId,
       domain: CookieOptions.domain,
       salt: Math.floor(Math.random() * Math.pow(10, 12)),
@@ -53,7 +54,7 @@ export class UserService {
     ]);
 
     return {
-      access_token: this.getAccessToken(userId),
+      access_token: this.getAccessToken(userId, createUserDto.email),
       directUrl: '/sign-in',
     };
   }
@@ -69,7 +70,7 @@ export class UserService {
       throw new Error('密码错误');
     }
     return {
-      access_token: this.getAccessToken(user.userId),
+      access_token: this.getAccessToken(user.userId, user.email),
     };
   }
 
@@ -90,5 +91,19 @@ export class UserService {
         throw new UnauthorizedException('Token 无效');
       }
     }
+  }
+
+  async getInfo(accessToken: string) {
+    const tokenInfo = this.jwtService.verify(accessToken);
+    if (!tokenInfo) {
+      return new Error('当前用户不存在');
+    }
+    const userInfo = await this.redisService.client.hGetAll(
+      `users:${tokenInfo.email}`,
+    );
+    return {
+      username: userInfo.username,
+      email: userInfo.email,
+    };
   }
 }
