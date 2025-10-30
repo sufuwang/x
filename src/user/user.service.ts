@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import CreateUserDto from './dto/create-user.dto';
 import LoginUserDto from './dto/login-user.dto';
 import { RedisService } from 'src/redis/redis.service';
@@ -78,10 +78,18 @@ export class UserService {
     if (!accessToken) {
       return { redirect_url: '/sign-in' };
     }
-    const user = this.jwtService.verify(accessToken);
-    if (!user) {
-      return { redirect_url: '/sign-in' };
+    try {
+      const user = this.jwtService.verify(accessToken);
+      if (!user) {
+        return { redirect_url: '/sign-in' };
+      }
+      return { data: 'success' };
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token 已过期');
+      } else {
+        throw new UnauthorizedException('Token 无效');
+      }
     }
-    return { data: 'success' };
   }
 }
