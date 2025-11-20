@@ -2,7 +2,7 @@ import { Controller, Post, Body, Res, Get, Req } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { UserService } from './user.service';
 import CreateUserDto from './dto/create-user.dto';
-import LoginUserDto from './dto/login-user.dto';
+import LoginUserDto, { WXLoginUserDto } from './dto/login-user.dto';
 import { CookieOptions } from '../lib/cookies';
 
 @Controller('user')
@@ -32,6 +32,12 @@ export class UserController {
       access_token: data.access_token,
       redirect_url: '/',
     };
+  }
+
+  @Post('/wx-login')
+  async wxLogin(@Body() { code }: WXLoginUserDto) {
+    const { user_id, conversation_id } = await this.userService.wxLogin(code);
+    return { user_id, conversation_id };
   }
 
   @Post('/logout')

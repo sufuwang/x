@@ -18,3 +18,8 @@ export default class LoginUserDto {
   })
   password: string;
 }
+
+export class WXLoginUserDto {
+  @IsString()
+  code: string;
+}

@@ -5,6 +5,7 @@ import { RedisService } from 'src/redis/redis.service';
 import { randomUUID as uuid } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { CookieOptions } from '../lib/cookies';
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -72,6 +73,39 @@ export class UserService {
     return {
       access_token: this.getAccessToken(user.userId, user.email),
     };
+  }
+
+  async wxLogin(js_code: string): Promise<WXUserInfo> {
+    const { data } = await axios.get(
+      'https://api.weixin.qq.com/sns/jscode2session',
+      {
+        params: {
+          appid: process.env.WX_APPID,
+          secret: process.env.WX_SECRET,
+          js_code,
+          grant_type: 'authorization_code',
+        },
+      },
+    );
+    if (!data.openid) {
+      throw new Error(data.errmsg || '微信登录失败');
+    }
+
+    const key = `wx_users:${data.openid}`;
+    const user = (await this.redisService.client.hGetAll(
+      key,
+    )) as unknown as WXUserInfo;
+    if (user) {
+      return user;
+    }
+
+    const row: WXUserInfo = {
+      ...data,
+      user_id: uuid(),
+      conversation_id: uuid(),
+    };
+    await this.redisService.client.hSet(key, row as any);
+    return row;
   }
 
   auth(accessToken: string | undefined) {
