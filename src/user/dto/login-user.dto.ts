@@ -23,3 +23,14 @@ export class WXLoginUserDto {
   @IsString()
   code: string;
 }
+
+export class WXUserDto {
+  @IsString()
+  user_id: string;
+
+  @IsString()
+  avatar_url: string;
+
+  @IsString()
+  nickname: string;
+}

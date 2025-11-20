@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import CreateUserDto from './dto/create-user.dto';
-import LoginUserDto from './dto/login-user.dto';
+import LoginUserDto, { WXUserDto } from './dto/login-user.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { randomUUID as uuid } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -95,7 +95,8 @@ export class UserService {
     const user = (await this.redisService.client.hGetAll(
       key,
     )) as unknown as WXUserInfo;
-    if (user) {
+    console.info('user: ', user);
+    if (user.openid) {
       return user;
     }
 
@@ -104,8 +105,31 @@ export class UserService {
       user_id: uuid(),
       conversation_id: uuid(),
     };
-    await this.redisService.client.hSet(key, row as any);
+    await Promise.all([
+      this.redisService.client.hSet(key, row as any),
+      this.redisService.client.set(`wx_user_id:${row.user_id}`, row.openid),
+    ]);
     return row;
+  }
+
+  async saveWxInfo(wxUserDto: WXUserDto): Promise<WXUserInfo> {
+    const openid = await this.redisService.client.get(
+      `wx_user_id:${wxUserDto.user_id}`,
+    );
+
+    if (!openid) {
+      throw new Error('未找到微信用户');
+    }
+
+    const user = (await this.redisService.client.hGetAll(
+      `wx_users:${openid}`,
+    )) as unknown as WXUserInfo;
+
+    const data = Object.assign(user, wxUserDto);
+    await this.redisService.client.hSet(`wx_users:${data.openid}`, data as any);
+
+    console.info('saved wx user info: ', openid, user, data);
+    return data;
   }
 
   auth(accessToken: string | undefined) {

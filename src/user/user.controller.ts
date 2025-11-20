@@ -2,7 +2,7 @@ import { Controller, Post, Body, Res, Get, Req } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { UserService } from './user.service';
 import CreateUserDto from './dto/create-user.dto';
-import LoginUserDto, { WXLoginUserDto } from './dto/login-user.dto';
+import LoginUserDto, { WXLoginUserDto, WXUserDto } from './dto/login-user.dto';
 import { CookieOptions } from '../lib/cookies';
 
 @Controller('user')
@@ -36,8 +36,18 @@ export class UserController {
 
   @Post('/wx-login')
   async wxLogin(@Body() { code }: WXLoginUserDto) {
-    const { user_id, conversation_id } = await this.userService.wxLogin(code);
-    return { user_id, conversation_id };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { openid, session_key, ...data } =
+      await this.userService.wxLogin(code);
+    return data;
+  }
+
+  @Post('/save-wx-info')
+  async saveWxInfo(@Body() body: WXUserDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { openid, session_key, ...data } =
+      await this.userService.saveWxInfo(body);
+    return data;
   }
 
   @Post('/logout')
